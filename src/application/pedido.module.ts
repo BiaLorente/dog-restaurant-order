@@ -8,6 +8,7 @@ import { pedidoProviders } from 'src/infrastructure/data/repositories/pedido.pro
 import { PedidoRepository } from 'src/infrastructure/data/repositories/pedido.repository';
 import { OrderMapper } from './mapper/pedido.mapper';
 import { ProdutoModule } from 'src/infrastructure/client/produto/produto.module';
+import { ClienteModule } from 'src/infrastructure/client/cliente/cliente.module';
 
 @Module({
   imports: [ProdutoModule],
@@ -25,6 +26,10 @@ import { ProdutoModule } from 'src/infrastructure/client/produto/produto.module'
     {
       provide: IPedidoRepository,
       useClass: PedidoRepository,
+    },
+    {
+      provide: 'IClienteClient',
+      useClass: ClienteModule,
     },
   ],
 })
