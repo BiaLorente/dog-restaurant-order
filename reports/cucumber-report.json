@@ -1,0 +1,209 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "create-an-order;successfully-create-an-order",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Successfully create an order",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I have valid customer ID \"customer1\" and combos",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I create an order",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "I should receive the order ID",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "create-an-order",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Create an order",
+    "tags": [],
+    "uri": "features/create_pedido.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "get-all-orders;successfully-get-all-orders",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Successfully get all orders",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "there are orders in the system",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I request all orders",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "I should receive a list of orders",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 7,
+            "name": "the orders should be filtered and sorted",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "get-all-orders",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Get all orders",
+    "tags": [],
+    "uri": "features/get_all_pedidos.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "get-order-by-id;successfully-get-an-order-by-id",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Successfully get an order by ID",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "there is an order with ID \"1\"",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "I request the order by ID \"1\"",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "I should receive the order details",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "get-order-by-id;fail-to-get-an-order-by-id",
+        "keyword": "Scenario",
+        "line": 8,
+        "name": "Fail to get an order by ID",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 9,
+            "name": "there is no order with ID \"3\"",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 10,
+            "name": "I request the order by ID \"3\"",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "I should receive an error message \"Pedido with ID 3 not found.\"",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "get-order-by-id",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Get order by ID",
+    "tags": [],
+    "uri": "features/get_pedido_by_id.feature"
+  }
+]
