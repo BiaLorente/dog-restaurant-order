@@ -1,5 +1,3 @@
-export default {
-  default: `--import ts-node/register 
-            --import ./test/features/**/*.steps.ts 
-            --format progress`
-};
+module.exports = {
+  default: `--format-options '{"snippetInterface": "synchronous"}'`
+}

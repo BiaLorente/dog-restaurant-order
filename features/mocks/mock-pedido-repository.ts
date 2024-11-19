@@ -1,6 +1,6 @@
-import { Pedido } from 'src/domain/entities/pedido.entity';
-import { PedidoStatus } from 'src/domain/enum/order-status.enum';
-import { IPedidoRepository } from 'src/domain/repositories/order-repository.interface';
+import { Pedido } from './../../src/domain/entities/pedido.entity';
+import { PedidoStatus } from './../../src/domain/enum/order-status.enum';
+import { IPedidoRepository } from './../../src/domain/repositories/order-repository.interface';
 
 export class MockPedidoRepository implements IPedidoRepository {
   private pedidos: Pedido[] = [
@@ -30,8 +30,8 @@ export class MockPedidoRepository implements IPedidoRepository {
     return this.pedidos;
   }
 
-  async getPedidoById(orderId: string): Promise<Pedido> {
-    return this.pedidos.find((pedido) => pedido.pedidoId === orderId);
+  async getPedidoById(orderId: string): Promise<Pedido | null> {
+    return this.pedidos.find((pedido) => pedido.pedidoId === orderId) || null;
   }
 
   async getPedidosByStatus(status: PedidoStatus): Promise<Pedido[]> {
@@ -50,3 +50,4 @@ export class MockPedidoRepository implements IPedidoRepository {
     return pedido.pedidoId;
   }
 }
+
