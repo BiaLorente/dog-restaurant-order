@@ -99,7 +99,7 @@ export class OrderMapper {
     });
 
     const getOrderOutput = new GetPedidoOutput();
-    (getOrderOutput.pedidoId = order.pedidoId),
+      (getOrderOutput.pedidoId = order.pedidoId),
       (getOrderOutput.clienteId = order.clienteId),
       (getOrderOutput.clienteNome = order.clienteNome),
       (getOrderOutput.criado = order.criado),
