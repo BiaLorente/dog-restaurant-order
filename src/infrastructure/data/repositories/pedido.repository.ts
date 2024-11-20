@@ -7,115 +7,57 @@ import { Pedidoscombos } from '../entities/pedido-combos.entity';
 import { Pedidos } from '../entities/pedido.entity';
 import { OrderEntityMapper } from '../mappers/pedido-entity.mapper';
 import { IClienteClient } from 'src/domain/client/cliente-client.interface';
+
 @Injectable()
 export class PedidoRepository implements IPedidoRepository {
   constructor(
     @Inject('PEDIDO_REPOSITORY')
-    private orderRepo: Repository<Pedidos>,
+    private readonly orderRepo: Repository<Pedidos>,
     @Inject('COMBOS_REPOSITORY')
-    private combosRepo: Repository<Pedidoscombos>,
+    private readonly combosRepo: Repository<Pedidoscombos>,
     @Inject('IClienteClient')
     private readonly clienteClient: IClienteClient,
   ) {}
 
   async getAllPedidos(): Promise<Pedido[]> {
-    const ordersReturn: Pedido[] = [];
     const ordersEntities = await this.orderRepo
       .createQueryBuilder('Pedidos')
       .getMany();
 
-    for (const orderEntity of ordersEntities) {
-      const combosEntities = await this.combosRepo
-        .createQueryBuilder('PedidosCombos')
-        .where('PedidosCombos.PedidoId = :id', { id: orderEntity.PedidoId })
-        .getMany();
-
-      const clienteName = await this.clienteClient.getName(
-        orderEntity.ClienteId,
-      );
-
-      const order = OrderEntityMapper.mapToOrderDomain(
-        orderEntity,
-        clienteName,
-      );
-      const orderCombos =
-        OrderEntityMapper.mapToOrderComboDomain(combosEntities);
-      order.addComboList(orderCombos);
-
-      ordersReturn.push(order);
-    }
-    return ordersReturn;
+    return this.mapOrdersWithCombosAndClientName(ordersEntities);
   }
 
   async getPedidoById(pedidoId: string): Promise<Pedido> {
-    try {
-      const [orderEntity, combosEntities] = await Promise.all([
-        this.orderRepo
-          .createQueryBuilder('Pedidos')
-          .where('Pedidos.PedidoId = :id', { id: pedidoId })
-          .getOne(),
-        this.combosRepo
-          .createQueryBuilder('PedidosCombos')
-          .where('PedidosCombos.PedidoId = :id', { id: pedidoId })
-          .getMany(),
-      ]);
+    const [orderEntity, combosEntities] = await Promise.all([
+      this.orderRepo
+        .createQueryBuilder('Pedidos')
+        .where('Pedidos.PedidoId = :id', { id: pedidoId })
+        .getOne(),
+      this.combosRepo
+        .createQueryBuilder('PedidosCombos')
+        .where('PedidosCombos.PedidoId = :id', { id: pedidoId })
+        .getMany(),
+    ]);
 
-      if (!orderEntity) {
-        throw new Error(`Pedido with ID ${pedidoId} not found.`);
-      }
-
-      const clienteName = await this.clienteClient.getName(
-        orderEntity.ClienteId,
-      );
-
-      const order = OrderEntityMapper.mapToOrderDomain(
-        orderEntity,
-        clienteName,
-      );
-      const orderCombos =
-        OrderEntityMapper.mapToOrderComboDomain(combosEntities);
-      order.addComboList(orderCombos);
-
-      return order;
-    } catch (error) {
-      console.error('Error fetching order by ID:', error);
-      throw error;
+    if (!orderEntity) {
+      throw new Error(`Pedido with ID ${pedidoId} not found.`);
     }
+
+    return this.mapOrderWithDetails(orderEntity, combosEntities);
   }
 
   async getPedidosByStatus(status: PedidoStatus): Promise<Pedido[]> {
-    const ordersReturn: Pedido[] = [];
     const ordersEntities = await this.orderRepo
       .createQueryBuilder('Pedidos')
       .where('Pedidos.PedidoStatus = :status', { status: status })
       .getMany();
 
-    for (const orderEntity of ordersEntities) {
-      const combosEntities = await this.combosRepo
-        .createQueryBuilder('PedidosCombos')
-        .where('PedidosCombos.PedidoId = :id', { id: orderEntity.PedidoId })
-        .getMany();
-
-      const clienteName = await this.clienteClient.getName(
-        orderEntity.ClienteId,
-      );
-
-      const order = OrderEntityMapper.mapToOrderDomain(
-        orderEntity,
-        clienteName,
-      );
-      const orderCombos =
-        OrderEntityMapper.mapToOrderComboDomain(combosEntities);
-      order.addComboList(orderCombos);
-
-      ordersReturn.push(order);
-    }
-    return ordersReturn;
+    return this.mapOrdersWithCombosAndClientName(ordersEntities);
   }
 
-  updatePedido(order: Pedido) {
+  async updatePedido(order: Pedido) {
     const orders = OrderEntityMapper.mapToOrderEntity(order);
-    this.orderRepo.save(orders);
+    await this.orderRepo.save(orders);
   }
 
   async createPedido(order: Pedido) {
@@ -123,5 +65,38 @@ export class PedidoRepository implements IPedidoRepository {
     const combos = OrderEntityMapper.mapToOrderComboEntity(order.combos);
     await this.orderRepo.save(orders);
     await this.combosRepo.save(combos);
+  }
+
+  // --- Helper Methods ---
+
+  private async mapOrdersWithCombosAndClientName(
+    ordersEntities: Pedidos[],
+  ): Promise<Pedido[]> {
+    return Promise.all(
+      ordersEntities.map(async (orderEntity) => {
+        const combosEntities = await this.fetchCombosByPedidoId(
+          orderEntity.PedidoId,
+        );
+        return this.mapOrderWithDetails(orderEntity, combosEntities);
+      }),
+    );
+  }
+
+  private async fetchCombosByPedidoId(pedidoId: string): Promise<Pedidoscombos[]> {
+    return this.combosRepo
+      .createQueryBuilder('PedidosCombos')
+      .where('PedidosCombos.PedidoId = :id', { id: pedidoId })
+      .getMany();
+  }
+
+  private async mapOrderWithDetails(
+    orderEntity: Pedidos,
+    combosEntities: Pedidoscombos[],
+  ): Promise<Pedido> {
+    const clienteName = await this.clienteClient.getName(orderEntity.ClienteId);
+    const order = OrderEntityMapper.mapToOrderDomain(orderEntity, clienteName);
+    const orderCombos = OrderEntityMapper.mapToOrderComboDomain(combosEntities);
+    order.addComboList(orderCombos);
+    return order;
   }
 }
