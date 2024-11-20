@@ -11,9 +11,9 @@ import { IClienteClient } from 'src/domain/client/cliente-client.interface';
 export class PedidoRepository implements IPedidoRepository {
   constructor(
     @Inject('PEDIDO_REPOSITORY')
-    private orderRepo: Repository<Pedidos>,
+    private readonly orderRepo: Repository<Pedidos>,
     @Inject('COMBOS_REPOSITORY')
-    private combosRepo: Repository<Pedidoscombos>,
+    private readonly combosRepo: Repository<Pedidoscombos>,
     @Inject('IClienteClient')
     private readonly clienteClient: IClienteClient,
   ) {}

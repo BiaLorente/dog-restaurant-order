@@ -6,7 +6,7 @@ import { Lanche } from '../value-objects/lanche.vo';
 
 export class Combo {
   private _pedidoId: string;
-  private _comboId: string;
+  private readonly _comboId: string;
   private _lanche: Lanche;
   private _sobremesa: Sobremesa;
   private _bebida: Bebida;

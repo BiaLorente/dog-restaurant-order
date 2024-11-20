@@ -1,7 +1,7 @@
 export abstract class BaseComboProduto {
-  private _produtoId: string;
-  private _categoriaId: string;
-  private _preco: number = 0;
+  private readonly _produtoId: string;
+  private readonly _categoriaId: string;
+  private readonly _preco: number = 0;
 
   get produtoId(): string {
     return this._produtoId;
